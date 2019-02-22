@@ -4,12 +4,11 @@ from datetime import datetime
 import json
 from flask_mail import Mail
 
-with open('config.json','r') as c:
-        params=json.load(c)["params"]
-local_server=True
+with open('config.json', 'r') as c:
+    params = json.load(c)["params"]
 
+local_server = True
 app = Flask(__name__)
-
 app.config.update(
     MAIL_SERVER = 'smtp.gmail.com',
     MAIL_PORT = '465',
@@ -17,9 +16,7 @@ app.config.update(
     MAIL_USERNAME = params['gmail-user'],
     MAIL_PASSWORD=  params['gmail-password']
 )
-
-mail=Mail(app)
-
+mail = Mail(app)
 if(local_server):
         app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri'] #mysql+pymysql://root:@localhost/codingthunder'
 else:
@@ -42,24 +39,36 @@ class Posts(db.Model):
     title = db.Column(db.String(80), nullable=False)
     slug = db.Column(db.String(21), nullable=False)
     content = db.Column(db.String(120), nullable=False)
+    tagline = db.Column(db.String(120), nullable=False)
     date = db.Column(db.String(12), nullable=True)
     img_file = db.Column(db.String(12), nullable=True)
 
-
-
-
 @app.route("/")
 def home():
-    return render_template('index.html',params=params)
+    posts = Posts.query.filter_by().all()[0:params['no_of_posts']]
+    return render_template('index.html', params=params, posts=posts)
 
 
-@app.route("/dashbord")
-def about():
-    return render_template('about.html',params=params)
+
+@app.route("/dashbord",methods=['GET','POST'])
+def dashbord():
+    if request.method=='POST':
+        pass
+    #REDIRECT TO ADMIN PANEL
+        
+    else:
+        return render_template('login.html', params=params)
+
+
+
 
 @app.route("/about")
-def dashbord():
-    return render_template('about.html',params=params)
+def about():
+    return render_template('about.html', params=params)
+
+
+
+
 
 @app.route("/post/<string:post_slug>", methods=['GET'])
 def post_route(post_slug):
