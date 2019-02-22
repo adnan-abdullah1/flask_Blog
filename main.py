@@ -3,12 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 from flask_mail import Mail
+import sys
+import os.path
+
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
-
 local_server = True
 app = Flask(__name__)
+app.secret_key = 'SECRET-KEY'
 app.config.update(
     MAIL_SERVER = 'smtp.gmail.com',
     MAIL_PORT = '465',
@@ -50,17 +53,29 @@ def home():
 
 
 
-@app.route("/dashbord",methods=['GET','POST'])
-def dashbord():
+@app.route("/admin",methods=['GET','POST'])
+def admin():
+    """
+    if ('user' in session): #and session['user']==params['admin_user']):
+    
+        return render_template('dashbord.html')
+        """
     if request.method=='POST':
-        pass
-    #REDIRECT TO ADMIN PANEL
-        
+        username=request.form.get('uname')
+        userpass=request.form.get('pass')
+        if(username==params['admin_user'] and userpass==params['admin_password']):
+            sesssion['user']=username
+            
+            return render_template('dashbord.html', params=params)
     else:
-        return render_template('login.html', params=params)
+        posts=Posts.query.all()
+        return render_template('dashbord.html', params=params,posts=posts)
+"""
+@app.route("/dashbord")
+def dashbord():
+    return render_template('index.html', params=params)
 
-
-
+"""
 
 @app.route("/about")
 def about():
@@ -85,8 +100,8 @@ def contact():
         phone = request.form.get('phone')
         message = request.form.get('message')
         entry = Contacts(name=name, phone_num = phone, mes = message, date= datetime.now(),email = email )
-        db.session.add(entry)
-        db.session.commit()
+        db.Sesssion.add(entry)
+        db.Sesssion.commit()
         mail.send_message('New message from ' + name,
                         sender=email,
                         recipients = [params['gmail-user']],
@@ -95,5 +110,6 @@ def contact():
 
     return render_template('contact.html',params=params)
 
-
-app.run(debug=True)
+if __name__ == '__main__':
+    
+    app.run(port=5001,debug=True)
