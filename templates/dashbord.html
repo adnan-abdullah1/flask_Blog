@@ -20,13 +20,18 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-
-        <!--fetech using for loop from database-->
-
+        <h1>Upload A File</h1>
+        
+     
+     <div class="row">
+       Add file uploader
+       </div>
+       <h1>Edit Posts</h1>
         <table class="table">
-            <tr>
-                <th>sno</th>
-                <th>ttle</th>
+          <thead>
+            
+                <th>Sno</th>
+                <th>Titlele</th>
                 <th>Date</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -40,7 +45,7 @@
               <td>{{post.sno}}</td>
               <td>{{post.title}}</td>
               <td>{{post.date}}</td>
-              <td><button class="btn btn-primary">Edit</button></td>
+              <td><a href="/edit/{{post.sno}}"><button class="btn btn-primary">Edit</button></a></td>
               <td><button class="btn btn-primary">Delete</button></td>
               
             </tr>
