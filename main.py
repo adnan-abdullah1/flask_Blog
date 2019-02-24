@@ -70,16 +70,30 @@ def admin():
     else:
         posts=Posts.query.all()
         return render_template('dashbord.html', params=params,posts=posts)
-"""
-@app.route("/dashbord")
-def dashbord():
-    return render_template('index.html', params=params)
 
-"""
 
 @app.route("/about")
 def about():
     return render_template('about.html', params=params)
+
+
+@app.route("/dashbord",methods=['GET','POST'])
+def dashbord():
+    if ('user' in session and session['user']==params['pasd']):
+        return render_template('dashbord.html',params=params)
+    if request.method=='POST':
+        username=request.form.get('uname')
+        userpass=request.form.get('pass')
+        print('userpass')
+        if( username==params['user_name'] and userpass==params['pasd']):
+            session['user']=username
+            
+            posts=Posts.query.all()
+           
+            return render_template('dashbord.html', params=params,posts=posts)
+    
+        
+    return render_template('login.html', params=params)
 
 
 
