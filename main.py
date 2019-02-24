@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,session
+from flask import Flask, render_template, request,session,redirect
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -91,12 +91,44 @@ def edit(sno):
                 post=Posts(title=box_title,slug=slug,content=content,tagline=tline,date=date,img_file=img_file)
                 db.session.add(post)
                 db.session.commit()
-        return render_template('edit.html',params=params,sno=sno)
+            
+            else:
+                post=Posts.query.filter_by(sno=sno).first()
+                post.title=box_title
+                post.slug=slug
+                post.content=content
+                post.tagline=tline
+                post.img_file=img_file
+                db.session.commit()
+                return redirect('/edit/'+sno)
+        post=Posts.query.filter_by(sno=sno).first()    
+        return render_template('edit.html',params=params,post=post,sno=sno)
+
+    
+@app.route("/delete/<string:sno>",methods=['GET','POST'])
+def delete(sno):
+    if ('user' in session and session['user']==params['user']):
+        post=Posts.query.filter_by(sno=sno).first()
+        db.session.delete(post)
+        db.session.commit()
+        return redirect("/dashbord")
+
+
+    
+
+
+@app.route("/logout")
+def logout():
+    session.pop('user')
+    return redirect('/dashbord')
+
 
     
 @app.route("/about")
 def about():
     return render_template('about.html', params=params)
+
+
 
 
 
