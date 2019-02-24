@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
@@ -51,39 +51,16 @@ def home():
 
 
 
-@app.route("/admin",methods=['GET','POST'])
-def admin():
-    """
-    if ('user' in session): #and session['user']==params['admin_user']):
-    
-        return render_template('dashbord.html')
-        """
-    if request.method=='POST':
-        username=request.form.get('uname')
-        userpass=request.form.get('pass')
-        if(username==params['admin_user'] and userpass==params['admin_password']):
-            sesssion['user']=username
-            
-            return render_template('dashbord.html', params=params)
-    else:
-        posts=Posts.query.all()
-        return render_template('dashbord.html', params=params,posts=posts)
-
-
-@app.route("/about")
-def about():
-    return render_template('about.html', params=params)
-
-
 @app.route("/dashbord",methods=['GET','POST'])
 def dashbord():
-    if ('user' in session and session['user']==params['pasd']):
-        return render_template('dashbord.html',params=params)
+    if ('user' in session and session['user']==params['user']):
+        return render_template('dashbord.html',params=params,posts=posts)
     if request.method=='POST':
         username=request.form.get('uname')
         userpass=request.form.get('pass')
+        print(username)
         print('userpass')
-        if( username==params['user_name'] and userpass==params['pasd']):
+        if( username==params['user'] and userpass==params['pasd']):
             session['user']=username
             
             posts=Posts.query.all()
@@ -93,6 +70,10 @@ def dashbord():
         
     return render_template('login.html', params=params)
 
+
+@app.route("/about")
+def about():
+    return render_template('about.html', params=params)
 
 
 
