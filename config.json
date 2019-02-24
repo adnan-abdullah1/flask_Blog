@@ -13,8 +13,8 @@
      "about_text":"Heyy my name is Adnan, i love technology",
      "no_of_posts": 3,
      "login_image":"login.svg",
-     "admin_user":"adnan",
-     "admin_password": "0886"
+     "user":"adnan",
+     "pasd": "0886"
     }
     
 }

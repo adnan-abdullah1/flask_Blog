@@ -53,17 +53,17 @@ def home():
 
 @app.route("/dashbord",methods=['GET','POST'])
 def dashbord():
-    """
-    if ('user' in session and session['user']==params['user1']):
+
+    if ('user' in session and session['user']==params['user']):
         posts=Posts.query.all()
         return render_template('dashbord.html',params=params,posts=posts)
-  """
+
     if request.method=='POST':
         username=request.form.get('uname')
         userpass=request.form.get('pass')
        
-        if( username==params['user1'] and userpass==params['pasd']):
-            session['user1']=username
+        if( username==params['user'] and userpass==params['pasd']):
+            session['user']=username
             
             posts=Posts.query.all()
            
