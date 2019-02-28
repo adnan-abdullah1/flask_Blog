@@ -36,6 +36,16 @@ class Contacts(db.Model):
     email = db.Column(db.String(20), nullable=False)
 
 
+class user_login(db.Model):
+   
+    sno = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(40), nullable=False)
+    secondname = db.Column(db.String(40), nullable=False)
+    email = db.Column(db.String(40), nullable=False)
+    password = db.Column(db.String(40), nullable=False)
+    confirm_password = db.Column(db.String(40), nullable=False)
+    
+
 class Posts(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
@@ -96,10 +106,29 @@ def dashbord():
             posts=Posts.query.all()
            
             return render_template('dashbord.html', params=params,posts=posts)
+    return render_template('login.html', params=params)
     
 
+@app.route("/userlogin",methods=['GET','POST'])
+def useerlogin():
     
-    return render_template('login.html', params=params)
+    if ('user' in session and session['user']==user_login.email):
+        posts=Posts.query.all()
+        return render_template('contact.html',params=params)
+    if request.method=='POST':
+        username=request.form.get('email')
+        userpass=request.form.get('password')
+        user_login.query.filter_by(parsd=password).all()
+        #pasrd=user_login.pasrd
+        if( userpass==user_login.pasrd):
+            session['user']=username
+            
+            posts=Posts.query.all()
+           
+            return render_template('contact.html')
+    
+    
+    return render_template('userlogin.html',params=params)
     
 @app.route("/edit/<string:sno>",methods=['GET','POST'])
 def edit(sno):
@@ -183,6 +212,31 @@ def contact():
                         )
 
     return render_template('contact.html',params=params)
+
+
+@app.route("/user", methods = ['GET', 'POST'])
+def user():
+    if(request.method=='POST'):
+        firstname= request.form.get('firstname')
+        secondname= request.form.get('secondname') 
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        ok = user_login(firstname=firstname,secondname=secondname, email= email, password = password,confirm_password = confirm_password )
+        db.session.add(ok)
+        db.session.commit()
+       
+
+    return render_template("user.html")
+
+
+
+
+@app.route("/userlogin")
+def userlogin():
+    
+    return render_template('userlogin.html',params=params)
+
 
 if __name__ == '__main__':
     
